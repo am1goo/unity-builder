@@ -27,7 +27,7 @@ namespace BuildSystem
             var skipped = true;
             foreach (var path in _paths)
             {
-                var dis = artifactDirectionInfo.GetDirectories(path);
+                var dis = artifactDirectionInfo.GetDirectoriesSafe(path);
                 foreach (var di in dis)
                 {
                     if (!di.Exists)
@@ -37,7 +37,7 @@ namespace BuildSystem
                     skipped = false;
                 }
 
-                var fis = artifactDirectionInfo.GetFiles(path);
+                var fis = artifactDirectionInfo.GetFilesSafe(path);
                 foreach (var fi in fis)
                 {
                     if (!fi.Exists)
