@@ -3,9 +3,9 @@ using UnityEditor;
 
 namespace BuildSystem
 {
-    public class SteamConfiguration : BuilderConfiguration
+    public class StandaloneConfiguration : BuilderConfiguration
     {
-        public SteamConfiguration(BuildTarget target, string artifactsPath, OnGetBuildTasksDelegate onPreBuildTasks = null, OnGetBuildTasksDelegate onPostBuildTasks = null) : base(target, artifactsPath, onPreBuildTasks, onPostBuildTasks)
+        public StandaloneConfiguration(BuildTarget target, string artifactsPath, OnGetBuildTasksDelegate onPreBuildTasks = null, OnGetBuildTasksDelegate onPostBuildTasks = null) : base(target, artifactsPath, onPreBuildTasks, onPostBuildTasks)
         {
         }
 
