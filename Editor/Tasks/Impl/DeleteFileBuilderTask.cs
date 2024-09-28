@@ -1,11 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BuildSystem
 {
     public class DeleteFileBuilderTask : IBuilderTask
     {
         private IEnumerable<string> _paths;
+
+        public DeleteFileBuilderTask(IEnumerable<SpecialPath> paths) : this(GetSpecialPathPattern(paths))
+        {
+        }
+
+        public DeleteFileBuilderTask(SpecialPath path) : this(GetSpecialPathPattern(path))
+        {
+        }
 
         public DeleteFileBuilderTask(string path) : this(new string[] { path })
         {
@@ -57,6 +66,28 @@ namespace BuildSystem
         public override string ToString()
         {
             return $"{nameof(DeleteFileBuilderTask)} [paths={string.Join(";", _paths)}]";
+        }
+
+        private static IEnumerable<string> GetSpecialPathPattern(IEnumerable<SpecialPath> paths)
+        {
+            return paths.Select(x => GetSpecialPathPattern(x));
+        }
+
+        private static string GetSpecialPathPattern(SpecialPath path)
+        {
+            switch (path)
+            {
+                case SpecialPath.BurstDebugFolder:
+                    return "*_BurstDebugInformation_DoNotShip";
+
+                default:
+                    throw new System.Exception("unsupported type " + path);
+            }
+        }
+
+        public enum SpecialPath
+        {
+            BurstDebugFolder = 0,
         }
     }
 }
