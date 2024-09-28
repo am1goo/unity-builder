@@ -3,7 +3,7 @@
 ## Installation
 ##### via Unity Package Manager
 The latest version can be installed via [package manager](https://docs.unity3d.com/Manual/upm-ui-giturl.html) using following git URL: \
-`https://github.com/am1goo/unity-builder.git#0.0.2`
+`https://github.com/am1goo/unity-builder.git#0.0.3`
 
 ## Requirements
 - Unity Engine 2020.x or higher

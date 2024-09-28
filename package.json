@@ -1,6 +1,6 @@
 {
     "name": "com.am1goo.buildsystem.unitybuilder",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "displayName": "Unity Builder",
     "description": "Another implementation of simple Unity Builder",
     "unity": "2020.3",
