@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -6,37 +7,55 @@ namespace BuildSystem
 {
     public class DeleteFileBuilderTask : IBuilderTask
     {
+        private RootPath _root;
         private IEnumerable<string> _paths;
 
-        public DeleteFileBuilderTask(IEnumerable<SpecialPath> paths) : this(GetSpecialPathPattern(paths))
+        public DeleteFileBuilderTask(IEnumerable<SpecialPath> paths) : this(RootPath.RootFolder, GetSpecialPathPattern(paths))
         {
         }
 
-        public DeleteFileBuilderTask(SpecialPath path) : this(GetSpecialPathPattern(path))
+        public DeleteFileBuilderTask(SpecialPath path) : this(RootPath.RootFolder, GetSpecialPathPattern(path))
         {
         }
 
-        public DeleteFileBuilderTask(string path) : this(new string[] { path })
+        public DeleteFileBuilderTask(RootPath root, string path) : this(root, new string[] { path })
         {
         }
 
-        public DeleteFileBuilderTask(IEnumerable<string> paths)
+        public DeleteFileBuilderTask(RootPath root, IEnumerable<string> paths)
         {
+            _root = root;
             _paths = paths;
         }
 
         public IBuilderTask.Result Run(IBuilderConfiguration configuration)
         {
-            var artifactPath = Builder.GetArtifactPath(configuration);
-            var artifactFileInfo = new FileInfo(artifactPath);
-            var artifactDirectionInfo = artifactFileInfo.Directory;
-            if (!artifactDirectionInfo.Exists)
+            var rootPath = Builder.GetArtifactPath(configuration);
+            var rootFileInfo = new FileInfo(rootPath);
+            var rootDirectionInfo = rootFileInfo.Directory;
+            switch (_root)
+            {
+                case RootPath.RootFolder:
+                    return RunAtPath(rootDirectionInfo, configuration);
+
+                case RootPath.DataFolder:
+                    var dataDirectoryInfo = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}_Data"));
+                    return RunAtPath(dataDirectoryInfo, configuration);
+
+                default:
+                    throw new Exception($"unsupported type {_root}");
+            }
+        }
+
+        private IBuilderTask.Result RunAtPath(DirectoryInfo directory, IBuilderConfiguration configuration)
+        {
+            if (!directory.Exists)
                 return IBuilderTask.Result.Skipped;
 
             var skipped = true;
             foreach (var path in _paths)
             {
-                var dis = artifactDirectionInfo.GetDirectoriesSafe(path);
+                var dis = directory.GetDirectoriesSafe(path);
                 foreach (var di in dis)
                 {
                     if (!di.Exists)
@@ -46,7 +65,7 @@ namespace BuildSystem
                     skipped = false;
                 }
 
-                var fis = artifactDirectionInfo.GetFilesSafe(path);
+                var fis = directory.GetFilesSafe(path);
                 foreach (var fi in fis)
                 {
                     if (!fi.Exists)
@@ -83,6 +102,12 @@ namespace BuildSystem
                 default:
                     throw new System.Exception("unsupported type " + path);
             }
+        }
+
+        public enum RootPath
+        {
+            RootFolder  = 0,
+            DataFolder  = 1,
         }
 
         public enum SpecialPath

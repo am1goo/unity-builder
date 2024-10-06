@@ -5,7 +5,7 @@ namespace BuildSystem
 {
     public class StandaloneConfiguration : BuilderConfiguration
     {
-        public StandaloneConfiguration(BuildTarget target, string artifactsPath, OnGetBuildTasksDelegate onPreBuildTasks = null, OnGetBuildTasksDelegate onPostBuildTasks = null) : base(target, artifactsPath, onPreBuildTasks, onPostBuildTasks)
+        public StandaloneConfiguration(BuildTarget target, string productName, string artifactsPath, OnGetBuildTasksDelegate onPreBuildTasks = null, OnGetBuildTasksDelegate onPostBuildTasks = null) : base(target, productName, artifactsPath, onPreBuildTasks, onPostBuildTasks)
         {
         }
 

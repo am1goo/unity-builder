@@ -7,6 +7,7 @@ namespace BuildSystem
     {
         BuildTarget target { get; }
         BuildTargetGroup targetGroup { get; }
+        string productName { get; }
         string artifactsPath { get; }
 
         IEnumerable<IBuilderTask> preBuildTasks { get; }

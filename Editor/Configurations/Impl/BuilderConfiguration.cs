@@ -12,6 +12,9 @@ namespace BuildSystem
         private BuildTargetGroup _targetGroup;
         public BuildTargetGroup targetGroup => _targetGroup;
 
+        private string _productName;
+        public string productName => _productName;
+
         private string _artifactsPath;
         public string artifactsPath => _artifactsPath;
 
@@ -23,12 +26,13 @@ namespace BuildSystem
 
         public delegate void OnGetBuildTasksDelegate(List<IBuilderTask> result);
 
-        public BuilderConfiguration(BuildTarget target, string artifactsPath, OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
+        public BuilderConfiguration(BuildTarget target, string productName, string artifactsPath, OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
         {
             AssertBuildTarget(target);
 
             _target = target;
-            _targetGroup = BuildTargetGroup.Standalone;
+            _targetGroup = BuildPipeline.GetBuildTargetGroup(target);
+            _productName = productName;
             _artifactsPath = artifactsPath;
 
             var preBuildTasks = new List<IBuilderTask>();
