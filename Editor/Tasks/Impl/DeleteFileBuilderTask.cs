@@ -99,8 +99,11 @@ namespace BuildSystem
                 case SpecialPath.BurstDebugFolder:
                     return "*_BurstDebugInformation_DoNotShip";
 
+                case SpecialPath.Il2CppDebugFolder:
+                    return "*_BackUpThisFolder_ButDontShipItWithYourGame";
+
                 default:
-                    throw new System.Exception("unsupported type " + path);
+                    throw new Exception($"unsupported type {path}");
             }
         }
 
@@ -112,7 +115,8 @@ namespace BuildSystem
 
         public enum SpecialPath
         {
-            BurstDebugFolder = 0,
+            BurstDebugFolder    = 0,
+            Il2CppDebugFolder   = 1,
         }
     }
 }
