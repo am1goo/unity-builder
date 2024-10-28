@@ -26,14 +26,26 @@ namespace BuildSystem
 
         public delegate void OnGetBuildTasksDelegate(List<IBuilderTask> result);
 
-        public BuilderConfiguration(BuildTarget target, string productName, string artifactsPath, OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
+        public BuilderConfiguration(Options options, OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
         {
-            AssertBuildTarget(target);
+            AssertBuildTarget(options.target);
 
-            _target = target;
-            _targetGroup = BuildPipeline.GetBuildTargetGroup(target);
-            _productName = productName;
-            _artifactsPath = artifactsPath;
+            _target = options.target;
+            _targetGroup = BuildPipeline.GetBuildTargetGroup(options.target);
+            _productName = options.productName;
+
+            var pathSegments = new List<string>();
+            if (!string.IsNullOrWhiteSpace(options.prefix))
+                pathSegments.Add(options.prefix);
+            if (!string.IsNullOrWhiteSpace(options.subplatform))
+                pathSegments.Add(options.subplatform);
+            else
+                pathSegments.Add("generic");
+            var buildTargetFolder = GetBuildTargetFolder(options.target);
+            pathSegments.Add(buildTargetFolder);
+            var buildTargetExecutable = GetBuildTargetFolder(_target, options.productName);
+            pathSegments.Add(buildTargetExecutable);
+            _artifactsPath = string.Join("/", pathSegments);
 
             var preBuildTasks = new List<IBuilderTask>();
             if (onPreBuildTasks != null)
@@ -49,6 +61,58 @@ namespace BuildSystem
         protected virtual void AssertBuildTarget(BuildTarget target)
         {
             //do nothing
+        }
+
+        private static string GetBuildTargetFolder(BuildTarget buildTarget)
+        {
+            switch (buildTarget)
+            {
+                case BuildTarget.StandaloneWindows:
+                    return "win_x86_64";
+                case BuildTarget.StandaloneWindows64:
+                    return "win_x64";
+                case BuildTarget.StandaloneLinux64:
+                    return "linux_x86_64";
+                case BuildTarget.StandaloneOSX:
+                case BuildTarget.StandaloneOSXIntel64:
+                    return "macos_x64";
+                case BuildTarget.StandaloneOSXIntel:
+                    return "macos_x86";
+                default:
+                    return buildTarget.ToString();
+            }
+        }
+
+        private static string GetBuildTargetFolder(BuildTarget buildTarget, string productName)
+        {
+            switch (buildTarget)
+            {
+                case BuildTarget.StandaloneWindows:
+                case BuildTarget.StandaloneWindows64:
+                    return $"{productName}.exe";
+
+                case BuildTarget.StandaloneLinux:
+                    return $"{productName}.x86";
+                case BuildTarget.StandaloneLinux64:
+                case BuildTarget.StandaloneLinuxUniversal:
+                    return $"{productName}.x86_64";
+
+                case BuildTarget.StandaloneOSX:
+                case BuildTarget.StandaloneOSXIntel:
+                case BuildTarget.StandaloneOSXIntel64:
+                    return $"{productName}.app";
+
+                default:
+                    return $"{productName}";
+            }
+        }
+
+        public struct Options
+        {
+            public BuildTarget target;
+            public string prefix;
+            public string subplatform;
+            public string productName;
         }
     }
 }
