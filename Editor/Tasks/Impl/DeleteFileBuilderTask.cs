@@ -44,7 +44,7 @@ namespace BuildSystem
                     {
                         if (Builder.IsOSX(configuration.target))
                         {
-                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, "Contents/Resources/Data"));
+                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}.app", "Contents/Resources/Data"));
                             return RunAtPath(di, configuration);
                         }
                         else
@@ -58,7 +58,7 @@ namespace BuildSystem
                     {
                         if (Builder.IsOSX(configuration.target))
                         {
-                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}", "Contents/Plugins"));
+                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}.app", "Contents/Plugins"));
                             return RunAtPath(di, configuration);
                         }
                         else
