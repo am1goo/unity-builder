@@ -59,6 +59,20 @@ namespace BuildSystem
             return $"Artifacts/{configuration.artifactsPath}";
         }
 
+        public static bool IsOSX(BuildTarget target)
+        {
+            switch (target)
+            {
+                case BuildTarget.StandaloneOSX:
+                case BuildTarget.StandaloneOSXIntel:
+                case BuildTarget.StandaloneOSXIntel64:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         private struct TaskReport
         {
             public bool preBuild;

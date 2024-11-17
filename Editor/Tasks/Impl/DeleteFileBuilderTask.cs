@@ -36,11 +36,37 @@ namespace BuildSystem
             switch (_root)
             {
                 case RootPath.RootFolder:
-                    return RunAtPath(rootDirectionInfo, configuration);
+                    {
+                        return RunAtPath(rootDirectionInfo, configuration);
+                    }
 
                 case RootPath.DataFolder:
-                    var dataDirectoryInfo = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}_Data"));
-                    return RunAtPath(dataDirectoryInfo, configuration);
+                    {
+                        if (Builder.IsOSX(configuration.target))
+                        {
+                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, "Contents/Resources/Data"));
+                            return RunAtPath(di, configuration);
+                        }
+                        else
+                        {
+                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}_Data"));
+                            return RunAtPath(di, configuration);
+                        }
+                    }
+
+                case RootPath.PluginsFolder:
+                    {
+                        if (Builder.IsOSX(configuration.target))
+                        {
+                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}", "Contents/Plugins"));
+                            return RunAtPath(di, configuration);
+                        }
+                        else
+                        {
+                            var di = new DirectoryInfo(Path.Combine(rootDirectionInfo.FullName, $"{configuration.productName}_Data", "Plugins"));
+                            return RunAtPath(di, configuration);
+                        }
+                    }
 
                 default:
                     throw new Exception($"unsupported type {_root}");
@@ -109,8 +135,9 @@ namespace BuildSystem
 
         public enum RootPath
         {
-            RootFolder  = 0,
-            DataFolder  = 1,
+            RootFolder      = 0,
+            DataFolder      = 1,
+            PluginsFolder   = 2,
         }
 
         public enum SpecialPath
