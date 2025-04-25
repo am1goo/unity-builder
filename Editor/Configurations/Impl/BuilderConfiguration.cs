@@ -43,7 +43,7 @@ namespace BuildSystem
                 pathSegments.Add("generic");
             var buildTargetFolder = GetBuildTargetFolder(options.target);
             pathSegments.Add(buildTargetFolder);
-            var buildTargetExecutable = GetBuildTargetFolder(_target, options.productName);
+            var buildTargetExecutable = GetBuildTargetExecutable(_target, options.productName);
             pathSegments.Add(buildTargetExecutable);
             _artifactsPath = string.Join("/", pathSegments);
 
@@ -63,7 +63,7 @@ namespace BuildSystem
             //do nothing
         }
 
-        private static string GetBuildTargetFolder(BuildTarget buildTarget)
+        protected virtual string GetBuildTargetFolder(BuildTarget buildTarget)
         {
             switch (buildTarget)
             {
@@ -83,7 +83,7 @@ namespace BuildSystem
             }
         }
 
-        private static string GetBuildTargetFolder(BuildTarget buildTarget, string productName)
+        protected virtual string GetBuildTargetExecutable(BuildTarget buildTarget, string productName)
         {
             switch (buildTarget)
             {
