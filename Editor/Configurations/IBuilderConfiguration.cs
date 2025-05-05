@@ -7,6 +7,7 @@ namespace BuildSystem
     {
         BuildTarget target { get; }
         BuildTargetGroup targetGroup { get; }
+        BuildOptions buildOptions { get; }
         string productName { get; }
         string artifactsPath { get; }
 

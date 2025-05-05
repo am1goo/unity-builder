@@ -12,6 +12,9 @@ namespace BuildSystem
         private BuildTargetGroup _targetGroup;
         public BuildTargetGroup targetGroup => _targetGroup;
 
+        private BuildOptions _buildOptions;
+        public BuildOptions buildOptions => _buildOptions;
+
         private string _productName;
         public string productName => _productName;
 
@@ -33,6 +36,7 @@ namespace BuildSystem
             _target = options.target;
             _targetGroup = BuildPipeline.GetBuildTargetGroup(options.target);
             _productName = options.productName;
+            _buildOptions = options.buildOptions;
 
             var pathSegments = new List<string>();
             if (!string.IsNullOrWhiteSpace(options.prefix))
@@ -110,6 +114,7 @@ namespace BuildSystem
         public struct Options
         {
             public BuildTarget target;
+            public BuildOptions buildOptions;
             public string prefix;
             public string subplatform;
             public string productName;

@@ -29,7 +29,7 @@ namespace BuildSystem
                 taskReports.Add(new TaskReport(preBuild: true, task, res));
             }
 
-            var options = default(BuildOptions);
+            var options = _configuration.buildOptions;
             var buildPlayerOptions = new BuildPlayerOptions
             {
                 scenes = EditorBuildSettingsScene.GetActiveSceneList(EditorBuildSettings.scenes),
