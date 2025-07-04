@@ -5,7 +5,7 @@ namespace BuildSystem
 {
     public class StandaloneConfiguration : BuilderConfiguration
     {
-        public StandaloneConfiguration(Options options, OnGetBuildTasksDelegate onPreBuildTasks = null, OnGetBuildTasksDelegate onPostBuildTasks = null) : base(options, onPreBuildTasks, onPostBuildTasks)
+        public StandaloneConfiguration(Options options) : base(options)
         {
         }
 

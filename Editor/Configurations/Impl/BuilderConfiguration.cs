@@ -21,15 +21,15 @@ namespace BuildSystem
         private string _artifactsPath;
         public string artifactsPath => _artifactsPath;
 
-        private IEnumerable<IBuilderTask> _preBuildTasks;
+        private List<IBuilderTask> _preBuildTasks;
         public IEnumerable<IBuilderTask> preBuildTasks => _preBuildTasks;
 
-        private IEnumerable<IBuilderTask> _postBuildTasks;
+        private List<IBuilderTask> _postBuildTasks;
         public IEnumerable<IBuilderTask> postBuildTasks => _postBuildTasks;
 
         public delegate void OnGetBuildTasksDelegate(List<IBuilderTask> result);
 
-        public BuilderConfiguration(Options options, OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
+        public BuilderConfiguration(Options options)
         {
             AssertBuildTarget(options.target);
 
@@ -37,6 +37,8 @@ namespace BuildSystem
             _targetGroup = BuildPipeline.GetBuildTargetGroup(options.target);
             _productName = options.productName;
             _buildOptions = options.buildOptions;
+            _preBuildTasks = new List<IBuilderTask>();
+            _postBuildTasks = new List<IBuilderTask>();
 
             var pathSegments = new List<string>();
             if (!string.IsNullOrWhiteSpace(options.prefix))
@@ -50,16 +52,17 @@ namespace BuildSystem
             var buildTargetExecutable = GetBuildTargetExecutable(_target, options.productName);
             pathSegments.Add(buildTargetExecutable);
             _artifactsPath = string.Join("/", pathSegments);
+        }
 
-            var preBuildTasks = new List<IBuilderTask>();
+        public void Configure(OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
+        {
+            _preBuildTasks.Clear();
             if (onPreBuildTasks != null)
-                onPreBuildTasks(preBuildTasks);
-            _preBuildTasks = preBuildTasks;
+                onPreBuildTasks(_preBuildTasks);
 
-            var postBuildTasks = new List<IBuilderTask>();
+            _postBuildTasks.Clear();
             if (onPostBuildTasks != null)
-                onPostBuildTasks(postBuildTasks);
-            _postBuildTasks = postBuildTasks;
+                onPostBuildTasks(_postBuildTasks);
         }
 
         protected virtual void AssertBuildTarget(BuildTarget target)
