@@ -6,6 +6,12 @@ namespace BuildSystem
 {
     public class BuilderConfiguration : IBuilderConfiguration
     {
+        private Options _options;
+        protected Options options => _options;
+
+        private bool _isConfigured;
+        public bool isConfigured => _isConfigured;
+
         private BuildTarget _target;
         public BuildTarget target => _target;
 
@@ -33,12 +39,20 @@ namespace BuildSystem
         {
             AssertBuildTarget(options.target);
 
+            _options = options;
             _target = options.target;
             _targetGroup = BuildPipeline.GetBuildTargetGroup(options.target);
             _productName = options.productName;
             _buildOptions = options.buildOptions;
+            _artifactsPath = string.Empty;
             _preBuildTasks = new List<IBuilderTask>();
             _postBuildTasks = new List<IBuilderTask>();
+        }
+
+        public void Configure(OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
+        {
+            if (_isConfigured)
+                return;
 
             var pathSegments = new List<string>();
             if (!string.IsNullOrWhiteSpace(options.prefix))
@@ -52,10 +66,7 @@ namespace BuildSystem
             var buildTargetExecutable = GetBuildTargetExecutable(_target, options.productName);
             pathSegments.Add(buildTargetExecutable);
             _artifactsPath = string.Join("/", pathSegments);
-        }
 
-        public void Configure(OnGetBuildTasksDelegate onPreBuildTasks, OnGetBuildTasksDelegate onPostBuildTasks)
-        {
             _preBuildTasks.Clear();
             if (onPreBuildTasks != null)
                 onPreBuildTasks(_preBuildTasks);
@@ -63,6 +74,8 @@ namespace BuildSystem
             _postBuildTasks.Clear();
             if (onPostBuildTasks != null)
                 onPostBuildTasks(_postBuildTasks);
+
+            _isConfigured = true;
         }
 
         protected virtual void AssertBuildTarget(BuildTarget target)

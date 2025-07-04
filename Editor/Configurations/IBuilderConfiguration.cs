@@ -5,6 +5,7 @@ namespace BuildSystem
 {
     public interface IBuilderConfiguration
     {
+        bool isConfigured { get; }
         BuildTarget target { get; }
         BuildTargetGroup targetGroup { get; }
         BuildOptions buildOptions { get; }

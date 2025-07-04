@@ -17,9 +17,14 @@ namespace BuildSystem
 
         public BuildReport Run()
         {
+            if (_configuration.isConfigured == false)
+                throw new Exception($"Run: current configuration is not configured properly");
+
+            var activeBuildTarget = EditorUserBuildSettings.activeBuildTarget;
+            var activeBuildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
             var switched = EditorUserBuildSettings.SwitchActiveBuildTarget(_configuration.targetGroup, _configuration.target);
             if (!switched)
-                throw new Exception($"Run: not switched to {_configuration.target} [{_configuration.targetGroup}]");
+                throw new Exception($"Run: not switched from {activeBuildTarget} [{activeBuildTargetGroup}] to {_configuration.target} [{_configuration.targetGroup}]");
 
             var taskReports = new List<TaskReport>();
 
