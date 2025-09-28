@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 
 namespace BuildSystem
@@ -64,7 +65,7 @@ namespace BuildSystem
             var buildTargetFolder = GetBuildTargetFolder(options.target);
             pathSegments.Add(buildTargetFolder);
             var buildTargetExecutable = GetBuildTargetExecutable(_target, options.productName);
-            pathSegments.Add(buildTargetExecutable);
+            pathSegments.Add(FixFilename(buildTargetExecutable));
             _artifactsPath = string.Join("/", pathSegments);
 
             _preBuildTasks.Clear();
@@ -125,6 +126,11 @@ namespace BuildSystem
                 default:
                     return $"{productName}";
             }
+        }
+
+        private static string FixFilename(string filename)
+        {
+            return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
         }
 
         public struct Options
