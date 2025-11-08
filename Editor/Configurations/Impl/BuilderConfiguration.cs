@@ -43,7 +43,7 @@ namespace BuildSystem
             _options = options;
             _target = options.target;
             _targetGroup = BuildPipeline.GetBuildTargetGroup(options.target);
-            _productName = options.productName;
+            _productName = FixFilename(options.productName);
             _buildOptions = options.buildOptions;
             _artifactsPath = string.Empty;
             _preBuildTasks = new List<IBuilderTask>();
@@ -64,8 +64,8 @@ namespace BuildSystem
                 pathSegments.Add("generic");
             var buildTargetFolder = GetBuildTargetFolder(options.target);
             pathSegments.Add(buildTargetFolder);
-            var buildTargetExecutable = GetBuildTargetExecutable(_target, options.productName);
-            pathSegments.Add(FixFilename(buildTargetExecutable));
+            var buildTargetExecutable = GetBuildTargetExecutable(_target, _productName);
+            pathSegments.Add(buildTargetExecutable);
             _artifactsPath = string.Join("/", pathSegments);
 
             _preBuildTasks.Clear();
