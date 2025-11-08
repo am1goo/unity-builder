@@ -1,8 +1,10 @@
-﻿namespace BuildSystem
+﻿using UnityEditor.Build.Reporting;
+
+namespace BuildSystem
 {
     public interface IBuilderTask
     {
-        Result Run(IBuilderConfiguration configuration);
+        Result Run(IBuilderConfiguration configuration, BuildSummary summary);
 
         public enum Result : byte
         {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Build.Reporting;
 
 namespace BuildSystem
 {
@@ -14,7 +15,7 @@ namespace BuildSystem
             _isEnabled = isEnabled;
         }
 
-        public IBuilderTask.Result Run(IBuilderConfiguration configuration)
+        public IBuilderTask.Result Run(IBuilderConfiguration configuration, BuildSummary summary)
         {
             var isSkipped = false;
             var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(configuration.targetGroup);

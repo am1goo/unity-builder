@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor.Build.Reporting;
 
 namespace BuildSystem
 {
@@ -28,7 +29,7 @@ namespace BuildSystem
             _paths = paths;
         }
 
-        public IBuilderTask.Result Run(IBuilderConfiguration configuration)
+        public IBuilderTask.Result Run(IBuilderConfiguration configuration, BuildSummary summary)
         {
             var rootPath = Builder.GetArtifactPath(configuration);
             var rootFileInfo = new FileInfo(rootPath);

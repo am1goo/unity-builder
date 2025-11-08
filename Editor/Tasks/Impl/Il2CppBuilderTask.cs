@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 
 namespace BuildSystem
 {
@@ -26,7 +27,7 @@ namespace BuildSystem
             _additionalArgs = additionalArgs;
         }
 
-        public IBuilderTask.Result Run(IBuilderConfiguration configuration)
+        public IBuilderTask.Result Run(IBuilderConfiguration configuration, BuildSummary summary)
         {
             PlayerSettings.SetScriptingBackend(configuration.targetGroup, _enabled ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
             if (_configuration.HasValue)

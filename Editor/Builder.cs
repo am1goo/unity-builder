@@ -30,7 +30,7 @@ namespace BuildSystem
 
             foreach (var task in _configuration.preBuildTasks)
             {
-                var res = task.Run(_configuration);
+                var res = task.Run(_configuration, default);
                 taskReports.Add(new TaskReport(preBuild: true, task, res));
             }
 
@@ -47,7 +47,7 @@ namespace BuildSystem
 
             foreach (var task in _configuration.postBuildTasks)
             {
-                var res = task.Run(_configuration);
+                var res = task.Run(_configuration, report.summary);
                 taskReports.Add(new TaskReport(preBuild: false, task, res));
             }
 
