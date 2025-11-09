@@ -19,45 +19,59 @@ namespace BuildSystem
         public BuildReport Run()
         {
             if (_configuration.isConfigured == false)
-                throw new Exception($"Run: current configuration is not configured properly");
+                throw new Exception($"{nameof(Run)}: current configuration is not configured properly");
 
             var activeBuildTarget = EditorUserBuildSettings.activeBuildTarget;
             var activeBuildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
             var switched = EditorUserBuildSettings.SwitchActiveBuildTarget(_configuration.targetGroup, _configuration.target);
             if (!switched)
-                throw new Exception($"Run: not switched from {activeBuildTarget} [{activeBuildTargetGroup}] to {_configuration.target} [{_configuration.targetGroup}]");
+                throw new Exception($"{nameof(Run)}: not switched from {activeBuildTarget} [{activeBuildTargetGroup}] to {_configuration.target} [{_configuration.targetGroup}]");
 
             var taskReports = new List<TaskReport>();
-
-            foreach (var task in _configuration.preBuildTasks)
+            try
             {
-                var res = task.Run(_configuration, default);
-                taskReports.Add(new TaskReport(preBuild: true, task, res));
+                foreach (var task in _configuration.preBuildTasks)
+                {
+                    var res = task.Run(_configuration, default);
+                    taskReports.Add(new TaskReport(preBuild: true, task, res));
+
+                    if (res == IBuilderTask.Result.Failed)
+                    {
+                        throw new Exception($"{nameof(Run)}: one of the pre-build tasks failed");
+                    }
+                }
+
+                var options = _configuration.buildOptions;
+                var buildPlayerOptions = new BuildPlayerOptions
+                {
+                    scenes = EditorBuildSettingsScene.GetActiveSceneList(EditorBuildSettings.scenes),
+                    target = _configuration.target,
+                    targetGroup = _configuration.targetGroup,
+                    options = options,
+                    locationPathName = GetArtifactPath(_configuration, absolute: false),
+                };
+                var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+                foreach (var task in _configuration.postBuildTasks)
+                {
+                    var res = task.Run(_configuration, report.summary);
+                    taskReports.Add(new TaskReport(preBuild: false, task, res));
+
+                    if (res == IBuilderTask.Result.Failed)
+                    {
+                        throw new Exception($"{nameof(Run)}: one of the post-build tasks failed");
+                    }
+                }
+
+                return report;
             }
-
-            var options = _configuration.buildOptions;
-            var buildPlayerOptions = new BuildPlayerOptions
+            finally
             {
-                scenes = EditorBuildSettingsScene.GetActiveSceneList(EditorBuildSettings.scenes),
-                target = _configuration.target,
-                targetGroup = _configuration.targetGroup,
-                options = options,
-                locationPathName = GetArtifactPath(_configuration, absolute: false),
-            };
-            var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
-
-            foreach (var task in _configuration.postBuildTasks)
-            {
-                var res = task.Run(_configuration, report.summary);
-                taskReports.Add(new TaskReport(preBuild: false, task, res));
+                foreach (var taskReport in taskReports)
+                {
+                    taskReport.Print();
+                }
             }
-
-            foreach (var taskReport in taskReports)
-            {
-                taskReport.Print();
-            }
-
-            return report;
         }
 
         public static string GetProjectPath(bool absolute)
