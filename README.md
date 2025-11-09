@@ -4,7 +4,7 @@
 ##### via Unity Package Manager
 The latest version can be installed via [package manager](https://docs.unity3d.com/Manual/upm-ui-giturl.html) using following git URL: \
 ```
-https://github.com/am1goo/unity-builder.git#0.0.16
+https://github.com/am1goo/unity-builder.git#0.0.17
 ```
 
 ## Requirements
