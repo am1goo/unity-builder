@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -41,7 +42,7 @@ namespace BuildSystem
                 target = _configuration.target,
                 targetGroup = _configuration.targetGroup,
                 options = options,
-                locationPathName = GetArtifactPath(_configuration),
+                locationPathName = GetArtifactPath(_configuration, absolute: false),
             };
             var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
 
@@ -59,9 +60,22 @@ namespace BuildSystem
             return report;
         }
 
-        public static string GetArtifactPath(IBuilderConfiguration configuration)
+        public static string GetProjectPath(bool absolute)
         {
-            return $"Artifacts/{configuration.artifactsPath}";
+            if (absolute)
+            {
+                return Application.dataPath.Replace("/Assets", "");
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        public static string GetArtifactPath(IBuilderConfiguration configuration, bool absolute)
+        {
+            var relativePath = $"Artifacts/{configuration.artifactsPath}";
+            return Path.Combine(GetProjectPath(absolute), relativePath);
         }
 
         public static bool IsOSX(BuildTarget target)

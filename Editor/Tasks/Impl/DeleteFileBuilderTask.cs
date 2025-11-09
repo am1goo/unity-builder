@@ -31,7 +31,7 @@ namespace BuildSystem
 
         public IBuilderTask.Result Run(IBuilderConfiguration configuration, BuildSummary summary)
         {
-            var rootPath = Builder.GetArtifactPath(configuration);
+            var rootPath = Builder.GetArtifactPath(configuration, absolute: true);
             var rootFileInfo = new FileInfo(rootPath);
             var rootDirectionInfo = rootFileInfo.Directory;
             switch (_root)
