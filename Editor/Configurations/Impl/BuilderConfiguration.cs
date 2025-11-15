@@ -99,6 +99,20 @@ namespace BuildSystem
                     return "macos_x64";
                 case BuildTarget.StandaloneOSXIntel:
                     return "macos_x86";
+                case BuildTarget.Android:
+                    return "android";
+                case BuildTarget.iOS:
+                    return "ios";
+                case BuildTarget.Switch:
+                    return "nswitch";
+                case BuildTarget.PS4:
+                    return "ps4";
+                case BuildTarget.PS5:
+                    return "ps5";
+                case BuildTarget.GameCoreXboxOne:
+                    return "xbone";
+                case BuildTarget.GameCoreXboxSeries:
+                    return "xbseries";
                 default:
                     return buildTarget.ToString();
             }
