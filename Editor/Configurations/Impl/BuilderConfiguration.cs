@@ -65,7 +65,8 @@ namespace BuildSystem
             var buildTargetFolder = GetBuildTargetFolder(options.target);
             pathSegments.Add(buildTargetFolder);
             var buildTargetExecutable = GetBuildTargetExecutable(_target, _productName);
-            pathSegments.Add(buildTargetExecutable);
+            if (!string.IsNullOrWhiteSpace(buildTargetExecutable))
+                pathSegments.Add(buildTargetExecutable);
             _artifactsPath = string.Join("/", pathSegments);
 
             _preBuildTasks.Clear();
@@ -136,6 +137,18 @@ namespace BuildSystem
                 case BuildTarget.StandaloneOSXIntel:
                 case BuildTarget.StandaloneOSXIntel64:
                     return $"{productName}.app";
+
+                case BuildTarget.Switch:
+                    return $"{productName}.nsp";
+
+                case BuildTarget.Android:
+                    return $"{productName}.apk";
+
+                case BuildTarget.iOS:
+                    return $"{productName}.ipa";
+
+                case BuildTarget.WebGL:
+                    return null;
 
                 default:
                     return $"{productName}";

@@ -21,17 +21,5 @@ namespace BuildSystem
                     throw new Exception($"unsupported target {target}");
             }
         }
-
-        protected override string GetBuildTargetExecutable(BuildTarget buildTarget, string productName)
-        {
-            switch (buildTarget)
-            {
-                case BuildTarget.iOS:
-                    return $"{productName}.ipa";
-
-                default:
-                    return base.GetBuildTargetExecutable(buildTarget, productName);
-            }
-        }
     }
 }
